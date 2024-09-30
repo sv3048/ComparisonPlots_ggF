@@ -30,8 +30,14 @@ file2 = ROOT.TFile(rootfile2, "READ")
 tree2 = file2.Get("Events")
 
 # Creating 1D histograms to store the mWW distributions for both samples
+
+# Creating 1D histograms to store the mWW distributions for both samples
 hist_pTWW_1 = ROOT.TH1F("hist_mWW_1", "Distribution of pTWW - Sample 1", 100, 0, 1000)
-hist_pTWW_2 = ROOT.TH1F("hist_mWW_2", "Distribution of pTWW - Sample 2", 100, 0, 1000)
+hist_pTWW_2 = ROOT.TH1F("hist_pTWW_2", "Distribution of pTWW - Sample 2", 100, 0, 1000)
+
+
+hist_mWW_1 = ROOT.TH1F("hist_mWW_1", "Distribution of mWW - Sample 1", 100, 0, 1000)
+hist_mWW_2 = ROOT.TH1F("hist_mWW_2", "Distribution of mWW - Sample 2", 100, 0, 1000)
 
 # Loop over events in the first TTree
 num_events_tree1 = tree1.GetEntries()
@@ -73,9 +79,10 @@ for i in range(num_events_tree1):
     jj = jet1 + jet2
     lnujj = lnu + jj 
     
-    # Fill histograms
-    #hist_mWW_1.Fill(lnujj.M())
-    hist_pTWW_1.Fill(lnujj.Pt())
+
+    if lnujj.M() > 160:
+        hist_pTWW_1.Fill(lnujj.Pt())
+        hist_mWW_1.Fill(lnujj.M())
     
 
 # Loop over events in the second TTree
@@ -145,48 +152,30 @@ for i in range(num_events_tree2):
 
 
     
-    # Fill histograms
-    # Check if mWW > 160 GeV
-        # Fill histograms
-    #hist_pT_2.Fill(llnunu.Pt())
-    #hist_mWW_2.Fill(llnunu.M())
-    hist_pTWW_2.Fill(llnunu.Pt())
-    print("ll.Pt()",ll.Pt())
-    print("nunu.pT()",nn.Pt() )
-    print("llnunu.pT()",llnunu.Pt())
-
-    print("ll px:", ll.Px(), "py:", ll.Py())  # Check individual components
-    print("nunu px:", nn.Px(), "py:", nn.Py())  # Check individual components
-
-    # Combine momenta
-    llnunu = ll + nn
-    print("llnunu.Pt():", llnunu.Pt())  # This should not be zero if ll and nunu are correct
-
-# # Normalize histograms
-# hist_mWW_1.Scale(1.0 / hist_mWW_1.Integral())
-# hist_mWW_2.Scale(1.0 / hist_mWW_2.Integral())
+    if llnunu.M() > 160:
+        hist_pTWW_2.Fill(llnunu.Pt())
+        hist_mWW_2.Fill(llnunu.M())
 
 
 # Normalize histograms
 hist_pTWW_1.Scale(1.0 / hist_pTWW_1.Integral())
 hist_pTWW_2.Scale(1.0 / hist_pTWW_2.Integral())
 
+hist_mWW_1.Scale(1.0 / hist_mWW_1.Integral())
+hist_mWW_2.Scale(1.0 / hist_mWW_2.Integral())
+
 # Set histogram styles
 hist_pTWW_1.SetLineColor(ROOT.kBlue)
 hist_pTWW_2.SetLineColor(ROOT.kRed)
 
-# # Draw histograms on a canvas
-# canvas = ROOT.TCanvas("canvas_mWW_comparison", "mWW Comparison", 1000, 800)
-# canvas.SetLogy(1)  # Set logarithmic scale for y-axis
-# hist_mWW_1.Draw()
-# hist_mWW_1.GetXaxis().SetTitle("mWW [GeV]")
-# hist_mWW_1.GetYaxis().SetTitle("Normalized Events")
-# hist_mWW_2.Draw("same")
+hist_mWW_1.SetLineColor(ROOT.kBlue)
+hist_mWW_2.SetLineColor(ROOT.kRed)
+
 
 
 # Draw histograms on a canvas
-canvas = ROOT.TCanvas("canvas_PTWW_comparison", "pTWW Comparison", 1000, 800)
-canvas.SetLogy(1)  # Set logarithmic scale for y-axis
+canvas_pTWW = ROOT.TCanvas("canvas_PTWW", "pTWW Comparison", 1000, 800)
+canvas_pTWW.SetLogy(1)  # Set logarithmic scale for y-axis
 hist_pTWW_1.Draw()
 hist_pTWW_1.GetXaxis().SetTitle("pTWW [GeV]")
 hist_pTWW_1.GetYaxis().SetTitle("Normalized Events")
@@ -194,11 +183,6 @@ hist_pTWW_2.Draw("same")
 
 
 
-# Add legend
-#legend = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
-#legend.AddEntry(hist_mWW_1, "Madgraph (Central)", "l")
-#legend.AddEntry(hist_mWW_2, "Madgraph+Pythia (WW decay) ", "l")
-#legend.Draw()
 
 # Add legend without the outer box and with symbols
 legend = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
@@ -210,10 +194,29 @@ legend.AddEntry(hist_pTWW_2, "MCFM 2l2nu Sample", "l")
 legend.Draw()
 
 
-# Save canvas as PNG
-#canvas.SaveAs("mWW_comparison_steve_ggWW.pdf")
+
 #canvas.SaveAs("mWW_comparison_lnuqq_madCental_2l2nu_mcfm_trywithFIRSTCOPY.pdf")
-canvas.SaveAs("mWW_comparison_lnuqq_madCental_2l2nu_mcfm_trywithFIRSTCOPY.pdf")
+canvas_pTWW.SaveAs("PTWW_comparison_lnuqq_madCental_2l2nu_mcfm_trywithFIRSTCOPY_mWWGRT160_NEW.pdf")
+
+
+# Draw histograms on a canvas
+canvas_mWW = ROOT.TCanvas("canvas_mWW_comparison", "mWW Comparison", 1000, 800)
+canvas_mWW.SetLogy(1)  # Set logarithmic scale for y-axis
+hist_mWW_1.Draw()
+hist_mWW_1.GetXaxis().SetTitle("mWW [GeV]")
+hist_mWW_1.GetYaxis().SetTitle("Normalized Events")
+hist_mWW_2.Draw("same")
+
+
+# Add legend
+legend = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
+legend.AddEntry(hist_mWW_1, "Madgraph (Central)", "l")
+legend.AddEntry(hist_mWW_2, "Madgraph+Pythia (WW decay) ", "l")
+legend.Draw()
+
+canvas_mWW.SaveAs("mWW_comparison_lnuqq_madCental_2l2nu_mcfm_trywithFIRSTCOPY_mWWGRT160_NEW.pdf")
+
+
 
 # Close the ROOT files
 file1.Close()
