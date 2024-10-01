@@ -82,6 +82,8 @@ for i in range(num_events_tree1):
     
     # Require exactly 1 lepton and 1 neutrino
     if len(nu_coll) != 1 or len(lep_coll) != 1 or len(quark_coll) != 2 or len(W_coll) != 2 :
+
+    #if len(nu_coll) != 1 or len(lep_coll) != 1 or len(quark_coll) != 2 or len(W_coll) != 2 :
         print(f"Neutrinos: {len(nu_coll)}, Leptons: {len(lep_coll)}, Quarks: {len(quark_coll)}, Ws: {len(W_coll)}")
         continue
     print ("did we reach here ")
@@ -142,8 +144,9 @@ for i in range(num_events_tree2):
     
     # Require exactly 1 lepton and 1 neutrino
     #if len(nu_coll_2) != 1 or len(lep_coll_2) != 1 or len(quark_coll_2) != 2:
+    if(len(lep_coll_2)!=2 or len(nu_coll_2)!=2)  :
 
-    if(len(lep_coll_2)!=2 or len(nu_coll_2)!=2)  or len(W_coll_2) != 2:
+    #if(len(lep_coll_2)!=2 or len(nu_coll_2)!=2)  or len(W_coll_2) != 2:
         continue
 
     # Calculate and fill histograms
